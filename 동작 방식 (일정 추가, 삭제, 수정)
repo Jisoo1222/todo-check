@@ -1,0 +1,115 @@
+import calendar
+import tkinter as tk
+from tkinter import messagebox, simpledialog
+
+def show_calendar():
+    year = int(year_entry.get())
+    month = int(month_entry.get())
+
+    try:
+        cal = calendar.month(year, month)
+        calendar_label.configure(text=cal)
+    except ValueError:
+        messagebox.showerror("Error", "Invalid year or month")
+
+def add_event():
+    date = int(selected_date.get())
+    event = simpledialog.askstring("Add Event", "Enter event details:")
+    if event:
+        if date in events:
+            events[date].append(event)
+        else:
+            events[date] = [event]
+        messagebox.showinfo("Event Added", "Event has been added.")
+
+def delete_event():
+    date = int(selected_date.get())
+    if date in events and events[date]:
+        event = simpledialog.askstring("Delete Event", "Enter event details:")
+        if event and event in events[date]:
+            events[date].remove(event)
+            messagebox.showinfo("Event Deleted", "Event has been deleted.")
+        else:
+            messagebox.showerror("Error", "Event not found.")
+    else:
+        messagebox.showerror("Error", "No events on this date.")
+
+def edit_event():
+    date = int(selected_date.get())
+    if date in events and events[date]:
+        event = simpledialog.askstring("Edit Event", "Enter event details:")
+        if event and event in events[date]:
+            new_event = simpledialog.askstring("Edit Event", "Enter updated event details:")
+            if new_event:
+                index = events[date].index(event)
+                events[date][index] = new_event
+                messagebox.showinfo("Event Edited", "Event has been edited.")
+        else:
+            messagebox.showerror("Error", "Event not found.")
+    else:
+        messagebox.showerror("Error", "No events on this date.")
+
+def show_events():
+    date = int(selected_date.get())
+    if date in events and events[date]:
+        event_list = "\n".join(events[date])
+        messagebox.showinfo("Events", event_list)
+    else:
+        messagebox.showinfo("Events", "No events on this date.")
+
+# 메인 창 생성
+root = tk.Tk()
+root.title("일정 관리 앱")
+
+# 년도 입력 필드
+year_label = tk.Label(root, text="년도:")
+year_label.pack()
+year_entry = tk.Entry(root)
+year_entry.pack()
+
+# 월 입력 필드
+month_label = tk.Label(root, text="월:")
+month_label.pack()
+month_entry = tk.Entry(root)
+month_entry.pack()
+
+# 달력 표시 버튼
+calendar_button = tk.Button(root, text="달력 보기", command=show_calendar)
+calendar_button.pack()
+
+# 달력 표시 라벨
+calendar_label = tk.Label(root, text="")
+calendar_label.pack()
+
+# 선택한 날짜 변수
+selected_date = tk.StringVar()
+
+# 날짜 선택 라디오 버튼
+date_frame = tk.Frame(root)
+date_frame.pack()
+
+for date in range(1, 32):
+    date_radio = tk.Radiobutton(date_frame, text=str(date), variable=selected_date, value=str(date))
+    date_radio.pack(side=tk.LEFT)
+
+# 일정 관리 버튼
+event_frame = tk.Frame(root)
+event_frame.pack()
+
+add_button = tk.Button(event_frame, text="일정 추가", command=add_event)
+add_button.pack(side=tk.LEFT)
+
+delete_button = tk.Button(event_frame, text="일정 삭제", command=delete_event)
+delete_button.pack(side=tk.LEFT)
+
+edit_button = tk.Button(event_frame, text="일정 수정", command=edit_event)
+edit_button.pack(side=tk.LEFT)
+
+show_button = tk.Button(event_frame, text="일정 확인", command=show_events)
+show_button.pack(side=tk.LEFT)
+
+# 일정 데이터
+events = {}
+
+# 앱 실행
+root.mainloop()
