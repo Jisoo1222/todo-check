@@ -1,0 +1,54 @@
+import calendar
+import tkinter as tk
+from tkinter import messagebox
+
+def show_calendar():
+    year = int(year_entry.get())
+    month = int(month_entry.get())
+
+    try:
+        cal = calendar.month(year, month)
+        calendar_label.configure(text=cal)
+    except ValueError:
+        messagebox.showerror("Error", "Invalid year or month")
+
+def set_goal():
+    goal = goal_entry.get()
+    messagebox.showinfo("Goal", f"Goal set: {goal}")
+
+# 메인 창 생성
+root = tk.Tk()
+root.title("일정 관리 앱")
+
+# 년도 입력 필드
+year_label = tk.Label(root, text="년도:")
+year_label.pack()
+year_entry = tk.Entry(root)
+year_entry.pack()
+
+# 월 입력 필드
+month_label = tk.Label(root, text="월:")
+month_label.pack()
+month_entry = tk.Entry(root)
+month_entry.pack()
+
+# 달력 표시 버튼
+calendar_button = tk.Button(root, text="달력 보기", command=show_calendar)
+calendar_button.pack()
+
+# 달력 표시 라벨
+calendar_label = tk.Label(root, text="")
+calendar_label.pack()
+
+# 목표 설정 필드
+goal_label = tk.Label(root, text="목표 설정:")
+goal_label.pack()
+goal_entry = tk.Entry(root)
+goal_entry.pack()
+
+# 목표 설정 버튼
+goal_button = tk.Button(root, text="목표 설정", command=set_goal)
+goal_button.pack()
+
+# 앱 실행
+root.mainloop()
